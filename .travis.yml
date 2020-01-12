@@ -1,6 +1,19 @@
-language: java
-
+language: android
+android:
+  components:
+    - tools # to get the new `repository-11.xml`
+    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - platform-tools
+    - build-tools-27.0.3
+    - android-27
 before_install:
-  - chmod +x gradlew
-  
-jdk: openjdk8
+  - yes | sdkmanager "platforms;android-27"
+script:
+  - ./gradlew build connectedCheck
+
+#language: java
+#
+#before_install:
+#  - chmod +x gradlew
+#
+#jdk: openjdk8
