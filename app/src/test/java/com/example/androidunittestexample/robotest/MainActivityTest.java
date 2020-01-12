@@ -25,7 +25,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void constructMainActivity() {
+    public void constructMainActivityViaSetup() {
         MainActivity activity = Robolectric.setupActivity(MainActivity.class);
 
         TextView textView = activity.findViewById(R.id.helloTextView);
@@ -34,7 +34,22 @@ public class MainActivityTest {
     }
 
     @Test
-    public void greetingTextChangedViaEventBusMessage() {
+    public void constructMainActivityViaBuild() {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class).setup();
+        MainActivity activity = controller.get();
+
+        TextView textView = activity.findViewById(R.id.helloTextView);
+
+        Assert.assertEquals("Hello World!", textView.getText());
+
+
+        // change to pause state
+        controller.pause();
+        Assert.assertEquals("Hello World!", textView.getText());
+    }
+
+    @Test
+    public void greetingTextChangedViaEventBusMessage1() {
         MainActivity activity = Robolectric.setupActivity(MainActivity.class);
 
         ChangeGreetingEvent greetingEvent = new ChangeGreetingEvent("who's scruffy looking?");
@@ -44,4 +59,17 @@ public class MainActivityTest {
 
         Assert.assertEquals(greetingEvent.getMessage(), textView.getText());
     }
+
+    @Test
+    public void greetingTextChangedViaEventBusMessage2() {
+        MainActivity activity = Robolectric.setupActivity(MainActivity.class);
+
+        ChangeGreetingEvent greetingEvent = new ChangeGreetingEvent("zzzzzzz1");
+        EventBusHelper.getEventBus().post(greetingEvent);
+
+        TextView textView = activity.findViewById(R.id.helloTextView);
+
+        Assert.assertEquals(greetingEvent.getMessage(), textView.getText());
+    }
+
 }
